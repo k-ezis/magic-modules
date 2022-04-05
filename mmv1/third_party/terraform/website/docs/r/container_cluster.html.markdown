@@ -21,7 +21,7 @@ and [the API reference](https://cloud.google.com/kubernetes-engine/docs/referenc
 
 ~> **Note:** All arguments and attributes, including basic auth username and
 passwords as well as certificate outputs will be stored in the raw state as
-plaintext. [Read more about sensitive data in state](/docs/state/sensitive-data.html).
+plaintext. [Read more about sensitive data in state](/language/state/sensitive-data.html).
 
 ## Example Usage - with a separately managed node pool (recommended)
 
@@ -367,9 +367,9 @@ subnetwork in which the cluster's instances are launched.
     It can only be disabled if the nodes already do not have network policies enabled.
     Defaults to disabled; set `disabled = false` to enable.
 
-* `gcp_filestore_csi_driver_config` - (Optional) The status of the Filestore CSI driver addon, 
+* `gcp_filestore_csi_driver_config` - (Optional) The status of the Filestore CSI driver addon,
     which allows the usage of filestore instance as volumes.
-    It is disbaled by default; set `enabled = true` to enable.
+    It is disabled by default; set `enabled = true` to enable.
 
 * `cloudrun_config` - (Optional). Structure is [documented below](#nested_cloudrun_config).
 
@@ -473,7 +473,7 @@ as "Intel Haswell" or "Intel Sandy Bridge".
 
 * `service_account` - (Optional) The Google Cloud Platform Service Account to be used by the node VMs.
 
-* `image_type` - (Optional) The default image type used by NAP once a new node pool is being created. Please note that according to the [official documentation](https://cloud.google.com/kubernetes-engine/docs/how-to/node-auto-provisioning#default-image-type) the value must be one of the [COS_CONTAINERD, COS, UBUNTU_CONTAINERD, UBUNTU].
+* `image_type` - (Optional) The default image type used by NAP once a new node pool is being created. Please note that according to the [official documentation](https://cloud.google.com/kubernetes-engine/docs/how-to/node-auto-provisioning#default-image-type) the value must be one of the [COS_CONTAINERD, COS, UBUNTU_CONTAINERD, UBUNTU]. __NOTE__ : COS AND UBUNTU are deprecated as of `GKE 1.24`
 
 <a name="nested_authenticator_groups_config"></a>The `authenticator_groups_config` block supports:
 
@@ -649,6 +649,20 @@ gcfs_config {
 }
 ```
 
+
+* `gvnic` - (Optional) Google Virtual NIC (gVNIC) is a virtual network interface.
+    Installing the gVNIC driver allows for more efficient traffic transmission across the Google network infrastructure.
+    gVNIC is an alternative to the virtIO-based ethernet driver. GKE nodes must use a Container-Optimized OS node image.
+    GKE node version 1.15.11-gke.15 or later
+    Structure is [documented below](#nested_gvnic).
+
+
+```hcl
+gvnic {
+  enabled = true
+}
+```
+
 * `guest_accelerator` - (Optional) List of the type and count of accelerator cards attached to the instance.
     Structure [documented below](#nested_guest_accelerator).
     To support removal of guest_accelerators in Terraform 0.12 this field is an
@@ -761,6 +775,10 @@ linux_node_config {
 <a name="nested_gcfs_config"></a>The `gcfs_config` block supports:
 
 * `enabled` (Required) - Whether or not the Google Container Filesystem (GCFS) is enabled
+
+<a name="nested_gvnic"></a>The `gvnic` block supports:
+
+* `enabled` (Required) - Whether or not the Google Virtual NIC (gVNIC) is enabled
 
 <a name="nested_guest_accelerator"></a>The `guest_accelerator` block supports:
 
